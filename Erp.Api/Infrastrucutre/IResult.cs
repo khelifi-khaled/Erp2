@@ -1,8 +1,9 @@
 ﻿namespace Erp.Api.Infrastrucutre;
 
-public interface IResult
+public interface IResults
 {
     bool IsSuccess { get; }
     bool IsFailure { get; }
     string? Message { get; }
+    object? Data { get; }
 }

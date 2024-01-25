@@ -4,16 +4,15 @@ using Erp.Api.Entities;
 using Erp.Api.Infrastrucutre;
 using Erp.Tools.CL;
 using FluentValidation;
+using Mapster;
 using MediatR;
 using System.Data;
-using static Erp.Api.Features.Items.CreateItem;
-using IResult = Erp.Api.Infrastrucutre.IResult;
 
 namespace Erp.Api.Features.Items;
 
 public static class CreateItem
 {
-    public class Command : IRequest<IResult>
+    public class Command : IRequest<IResults>
     {
         public Guid VatTypeId { get; set; }
         public string SupplierItemNumber { get; set; } = string.Empty;
@@ -36,7 +35,7 @@ public static class CreateItem
         }
     }
 
-    internal sealed class Handler : IRequestHandler<Command, IResult>
+    internal sealed class Handler : IRequestHandler<Command, IResults>
     {
         private readonly IDbConnection _dbConnection;
         private readonly IValidator<Command> _validator;
@@ -48,7 +47,7 @@ public static class CreateItem
 
         
 
-        public Task<IResult> Handle(Command request, CancellationToken cancellationToken)
+        public Task<IResults> Handle(Command request, CancellationToken cancellationToken)
         {
             var validationResult = _validator.Validate(request);
 
@@ -86,7 +85,7 @@ public static class CreateItem
                                 item_price = item.ItemPrice
                             });
 
-            return Task.FromResult(Result.Success(item.Id.ToString()));
+            return Task.FromResult(Result.Success(data: item.Id));
         }
 
     }
@@ -98,15 +97,7 @@ public class CreateItemEndpoint : ICarterModule
     {
         app.MapPost("/api/items", async (CreateItemRequest request, ISender sender) =>
         {
-            var command = new Command()
-            {
-                VatTypeId = request.VatTypeId,
-                SupplierItemNumber = request.SupplierItemNumber,
-                ItemBarcode = request.ItemBarcode,
-                ItemNumber = request.ItemNumber,
-                ItemDiscription = request.ItemDiscription,
-                ItemPrice = request.ItemPrice
-            };
+            var command = request.Adapt<CreateItem.Command>();
 
             var result = await sender.Send(command);
 
@@ -115,7 +106,7 @@ public class CreateItemEndpoint : ICarterModule
                 return Results.BadRequest(result.Message);
             }
 
-            return Results.Ok(result.Message);
+            return Results.Ok(result.Data);
         });
     }
 }
