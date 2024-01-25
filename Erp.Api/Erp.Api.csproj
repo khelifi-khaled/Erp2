@@ -17,10 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Mappers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Erp.Tools.CL\Erp.Tools.CL.csproj" />
   </ItemGroup>
 

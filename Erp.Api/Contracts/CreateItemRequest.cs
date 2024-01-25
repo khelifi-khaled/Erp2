@@ -1,6 +1,6 @@
 ﻿namespace Erp.Api.Contracts;
 
-public class CreateItemRequest
+public sealed record CreateItemRequest
 {
     public Guid VatTypeId { get; set; }
     public string SupplierItemNumber { get; set; } = string.Empty;
