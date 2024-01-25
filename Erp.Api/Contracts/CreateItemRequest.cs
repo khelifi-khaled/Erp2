@@ -1,12 +1,11 @@
-﻿namespace Erp.Api.Entities;
+﻿namespace Erp.Api.Contracts;
 
-public class Item
+public class CreateItemRequest
 {
-    public Guid Id { get; set; }
-    public VatTypes VatType { get; set; } = new VatTypes();
+    public Guid VatTypeId { get; set; }
     public string SupplierItemNumber { get; set; } = string.Empty;
     public string ItemBarcode { get; set; } = string.Empty;
-    public string ItemNumber { get; set;} = string.Empty;
+    public string ItemNumber { get; set; } = string.Empty;
     public string ItemDiscription { get; set; } = string.Empty;
     public double ItemPrice { get; set; }
 }
