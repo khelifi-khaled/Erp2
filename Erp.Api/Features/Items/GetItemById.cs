@@ -1,4 +1,4 @@
-﻿using Erp.Api.Entities;
+﻿using Carter;
 using Erp.Api.Infrastrucutre;
 using Erp.Api.Mappers;
 using Erp.Tools.CL;
@@ -8,7 +8,7 @@ using System.Data;
 
 namespace Erp.Api.Features.Items;
 
-public class GetItem 
+public class GetItemById 
 {
     public class Query : IRequest<IResults>
     {
@@ -20,7 +20,6 @@ public class GetItem
         public Validator()
         {
             RuleFor(x => x.Id).NotEmpty().NotNull();
-            
         }
     }
 
@@ -46,15 +45,48 @@ public class GetItem
             }
 
             var item = 
-                _dbConnection.ExecuteReader(@"SELECT * FROM Items WHERE Id = @Id", dr => dr.ToItem(),false, new { request.Id }).FirstOrDefault();
+                _dbConnection.ExecuteReader(@"SELECT i.id 
+	                                        , i.vat_type_id
+	                                        , vt.vat_type 
+	                                        , i.supplier_item_number
+	                                        , i.item_barcode
+	                                        , i.item_number
+	                                        , i.item_discription
+	                                        ,i.item_price 
+	                                        FROM items i join vat_types vt ON vt.id = i.vat_type_id WHERE i.Id = @Id", 
+                                            dr => dr.ToItem(),
+                                            false, 
+                                            new { request.Id }).FirstOrDefault();
 
             if (item is null)
             {
                 return Task.FromResult(Result.Failure("Item not found"));
             }
 
-            return Task.FromResult(Result.Success(data: );
+            return Task.FromResult(Result.Success(data: item));
         }
     }
 }
+
+public class GetItemEndPoint : ICarterModule
+{
+    public void AddRoutes(IEndpointRouteBuilder app)
+    {
+        app.MapGet("/api/items/{id}", async (Guid id, ISender sender) =>
+        {
+            var query = new GetItemById.Query() { Id = id };
+
+            var result = await sender.Send(query);
+
+            if(result.IsFailure)
+            {
+                return Results.BadRequest(result.Message);
+            }
+
+            return Results.Ok(result.Data);
+
+        });
+    }
+}
+
 

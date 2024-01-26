@@ -19,7 +19,7 @@ public static class ItemMapper
             ItemBarcode = (string)record["item_barcode"],
             ItemNumber = (string)record["item_number"],
             ItemDiscription = (string)record["item_discription"],
-            ItemPrice = (double)record["item_price"]
+            ItemPrice = Convert.ToDouble(record["item_price"])
         };
     }
 }
