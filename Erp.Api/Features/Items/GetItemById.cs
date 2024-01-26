@@ -40,7 +40,7 @@ public class GetItemById
             if (!validationResult.IsValid)
             {
                 var errorMessages = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-                var concatenatedErrors = string.Join(", ", errorMessages);
+                var concatenatedErrors = string.Join(",", errorMessages);
                 return Task.FromResult(Result.Failure(concatenatedErrors));
             }
 
@@ -68,7 +68,7 @@ public class GetItemById
     }
 }
 
-public class GetItemEndPoint : ICarterModule
+public class GetItemByIdEndPoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
