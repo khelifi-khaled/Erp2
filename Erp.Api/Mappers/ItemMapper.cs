@@ -5,7 +5,7 @@ namespace Erp.Api.Mappers;
 
 public static class ItemMapper
 {
-    public static Item ToItem(this IDataRecord record)
+    internal static Item ToItem(this IDataRecord record)
     {
         return new Item()
         {
