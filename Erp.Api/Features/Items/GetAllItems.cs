@@ -1,5 +1,4 @@
 ﻿using Carter;
-using Erp.Api.Contracts;
 using Erp.Api.Infrastrucutre;
 using Erp.Api.Mappers;
 using Erp.Tools.CL;
